@@ -24,18 +24,18 @@ type Requestor struct {
 	Anchor      string
 
 	// Request Control
-	Timeout     time.Duration
+	Timeout time.Duration
 
 	// common data
 	//Jar *RequestJar
 
 	// Request Data section
-	Method string
+	Method      string
 	RequestBody []byte
-	Headers Header
+	Headers     Header
 
 	// Response Data section
-	response 		*Response
+	response       *Response
 	ResponseHeader Header
 	ResponseBody   *bytes.Buffer
 	StatusCode     int
@@ -63,7 +63,6 @@ type Requestor struct {
 //	return j.perURL[u.Host]
 //}
 
-
 func (req *Requestor) HasTimeout() bool {
 	return req.Timeout > 0
 }
@@ -78,23 +77,26 @@ func (req *Requestor) IsSuccess() bool {
 	var url *url2.URL
 	var err error
 	if len(req.RequestURI) > 0 {
-		url,err = url2.Parse(req.RequestURI)
+		url, err = url2.Parse(req.RequestURI)
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	request,err := NewRequestWithContext(ctx, req.Method, url.String(), bytes.NewBuffer(req.RequestBody))
+	request, err := NewRequestWithContext(ctx, req.Method, url.String(), bytes.NewBuffer(req.RequestBody))
 	if err != nil {
 		panic(err)
 	}
 
+	// add request header
+	request.Header = req.Headers
+
 	client := &Client{
 		//Jar:           req.Jar,
-		Timeout:       req.Timeout,
+		Timeout: req.Timeout,
 	}
 
-	resp,err := client.Do(request)
+	resp, err := client.Do(request)
 	req.response = resp
 	if err != nil {
 		panic(err)
@@ -122,7 +124,6 @@ func (req *Requestor) GetStatusCode() int {
 	return req.StatusCode
 }
 
-
 func (req *Requestor) GetResponseHeader() Header {
 	return req.ResponseHeader
 }
@@ -138,7 +139,7 @@ func (req *Requestor) GetResponse() *Response {
 func (req *Requestor) DumpResponse() {
 	v := reflect.ValueOf(*req.GetResponse())
 	t := v.Type()
-	for i:=0; i < t.NumField(); i ++ {
+	for i := 0; i < t.NumField(); i++ {
 		log.Println(t.Field(i).Name, "=", v.Field(i))
 	}
 }
