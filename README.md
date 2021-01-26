@@ -1,7 +1,7 @@
 # requestor
 
 #### 介绍
-config as request, no more decorations, just with net/http.
+config as request
 
 #### 软件架构
 软件架构说明
@@ -9,15 +9,16 @@ config as request, no more decorations, just with net/http.
 
 #### 安装教程
 ```shell
-go get github.com/qunqiang/requestor
+go get github.com/qunqiangrequestor
 ```
 #### 使用说明
+
 
 ```go
 package demo
 
 import (
-	req "github.com/qunqiang/requestor"
+	req "github.com/qunqiangrequestor"
 	"log"
 	"net/http"
 )
@@ -29,31 +30,37 @@ func demo() {
 			"content-type" : {"application/json"},
 			"x-trace-id": {"123jadfn3829afl3"},
 		},
-		Method: "GET",
-		Body: []byte("hello world"),
+		Method: "POST",
+		RequestBody: []byte("{\"abc\":\"hello world\"}"),
 	}
 
 	type ResponseStruct struct {
 		Origin string `json:"origin"`
 		Headers map[string]string `json:"headers"`
 		Method string `json:"method"`
-		Body	string `json:"json"`
+		Body	string `json:"body"`
 		Data    string `json:"data"`
+		Json 	interface{} `json:"json"`
 		File    interface{} `json:"file"`
 		Form    interface{} `json:"form"`
 	}
-	resp := &ResponseStruct{}
-
+	resp := ResponseStruct{}
 	if requestor.IsSuccess() {
 		log.Println(requestor.GetStatusCode())
 		log.Println(requestor.GetResponseHeader())
 		log.Println(requestor.GetBody())
-		err := requestor.UnmarshalBody(resp)
+		err := requestor.UnmarshalBody(&resp)
 		if err != nil {
 			panic(err)
 		}
-		log.Println(resp.Method, resp.Body, resp.Headers["User-Agent"])
+		v := reflect.ValueOf(resp)
+		t := v.Type()
+
+		for i:=0; i < t.NumField(); i ++ {
+			log.Println(t.Field(i).Name, "=", v.Field(i))
+		}
 	} else {
+		requestor.DumpResponse()
 		log.Println("请求失败", requestor.GetStatusCode())
 	}
 }
