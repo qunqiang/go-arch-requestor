@@ -2,7 +2,6 @@
 
 #### 介绍
 config as request, no more decorations, just with net/http.
-Why is this component called go-arch-requestor, because it's a mirror from gitee.com/go-arch/requestor.
 
 #### 软件架构
 软件架构说明
