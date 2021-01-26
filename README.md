@@ -53,9 +53,6 @@ func demo() {
 		if err != nil {
 			panic(err)
 		}
-		for k,v := range resp {
-			
-        }
 		log.Println(resp.Method, resp.Body, resp.Headers["User-Agent"])
 	} else {
 		log.Println("请求失败", requestor.GetStatusCode())
