@@ -10,7 +10,7 @@ Why is this component called go-arch-requestor, because it's a mirror from gitee
 
 #### 安装教程
 ```shell
-go get github.com/qunqiang/go-arch-requestor
+go get github.com/qunqiang/requestor
 ```
 #### 使用说明
 
@@ -18,7 +18,7 @@ go get github.com/qunqiang/go-arch-requestor
 package demo
 
 import (
-	req "github.com/qunqiang/go-arch-requestor"
+	req "github.com/qunqiang/requestor"
 	"log"
 	"net/http"
 )
